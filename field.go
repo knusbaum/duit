@@ -326,6 +326,9 @@ func (ui *Field) Mouse(dui *DUI, self *Kid, m draw.Mouse, origM draw.Mouse, orig
 		}
 		return len(ui.Text)
 	}
+
+	origText := ui.Text
+
 	if ui.m.Buttons&1 == 0 && m.Buttons&1 == 1 {
 		// b1 down, start selection
 		ui.Cursor1 = 1 + locateCursor()
@@ -379,7 +382,11 @@ func (ui *Field) Mouse(dui *DUI, self *Kid, m draw.Mouse, origM draw.Mouse, orig
 			}
 		}
 	}
-	
+	if ui.Changed != nil && origText != ui.Text {
+		e := ui.Changed(ui.Text)
+		propagateEvent(self, &r, e)
+	}
+
 	return
 }
 
